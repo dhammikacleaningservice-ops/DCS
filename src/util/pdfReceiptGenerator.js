@@ -152,9 +152,8 @@ export async function generatePDFReceipt(paymentData) {
   doc.setFont('helvetica', 'bold');
   doc.text('#', margin + 5, yPos);
   doc.text('Branch', margin + 15, yPos);
-  doc.text('Days', margin + 100, yPos);
-  doc.text('Rate (LKR)', margin + 125, yPos);
-  doc.text('Total (LKR)', pageWidth - margin - 30, yPos);
+  doc.text('Days × Rate', margin + 95, yPos);
+  doc.text('Total (LKR)', pageWidth - margin - 5, yPos, { align: 'right' });
   
   // Separator line
   doc.setDrawColor(200, 200, 200);
@@ -172,9 +171,8 @@ export async function generatePDFReceipt(paymentData) {
     
     doc.text(`${index + 1}`, margin + 5, yPos);
     doc.text(entry.branch, margin + 15, yPos);
-    doc.text(entry.days.toString(), margin + 100, yPos);
-    doc.text(entry.rate.toLocaleString(), margin + 125, yPos);
-    doc.text(entry.total.toLocaleString(), pageWidth - margin - 30, yPos, { align: 'right' });
+    doc.text(`${entry.days} × ${entry.rate.toLocaleString()}`, margin + 95, yPos);
+    doc.text(entry.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }), pageWidth - margin - 5, yPos, { align: 'right' });
     
     yPos += 7;
   });
@@ -198,13 +196,13 @@ export async function generatePDFReceipt(paymentData) {
   // Gross Total
   doc.setFont('helvetica', 'normal');
   doc.text('Gross Total:', summaryX, yPos);
-  doc.text(`LKR ${paymentData.gross_total.toLocaleString()}`, pageWidth - margin, yPos, { align: 'right' });
+  doc.text(`LKR ${paymentData.gross_total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, pageWidth - margin, yPos, { align: 'right' });
   
   yPos += 7;
   
   // Deductions
   doc.text('Deductions:', summaryX, yPos);
-  doc.text(`LKR ${paymentData.deductions.toLocaleString()}`, pageWidth - margin, yPos, { align: 'right' });
+  doc.text(`LKR ${paymentData.deductions.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, pageWidth - margin, yPos, { align: 'right' });
   
   yPos += 2;
   
@@ -219,7 +217,7 @@ export async function generatePDFReceipt(paymentData) {
   doc.setFontSize(12);
   doc.setTextColor(...primaryColor);
   doc.text('NET PAY:', summaryX, yPos);
-  doc.text(`LKR ${paymentData.net_pay.toLocaleString()}`, pageWidth - margin, yPos, { align: 'right' });
+  doc.text(`LKR ${paymentData.net_pay.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, pageWidth - margin, yPos, { align: 'right' });
   
   yPos += 15;
   
