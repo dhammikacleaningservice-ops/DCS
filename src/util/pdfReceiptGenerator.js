@@ -1,10 +1,29 @@
 import { jsPDF } from 'jspdf';
 
 /**
+ * Load and convert image to base64
+ */
+async function loadImageAsBase64(imagePath) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      resolve(canvas.toDataURL('image/jpeg'));
+    };
+    img.onerror = reject;
+    img.src = imagePath;
+  });
+}
+
+/**
  * Generate a professional PDF receipt for payroll payments
  * @param {Object} paymentData - The payment data to include in the receipt
  */
-export function generatePDFReceipt(paymentData) {
+export async function generatePDFReceipt(paymentData) {
   const doc = new jsPDF();
   
   // Company colors
@@ -19,33 +38,61 @@ export function generatePDFReceipt(paymentData) {
   
   let yPos = 20;
   
-  // ============= HEADER =============
-  // Company header background
-  doc.setFillColor(...primaryColor);
-  doc.rect(0, 0, pageWidth, 45, 'F');
+  // ============= HEADER WITH LETTERHEAD =============
+  try {
+    // Load letterhead image
+    const letterheadBase64 = await loadImageAsBase64('/Letter_Head.jpeg');
+    
+    // Get image dimensions to maintain aspect ratio
+    const img = new Image();
+    img.src = letterheadBase64;
+    await new Promise(resolve => { img.onload = resolve; });
+    
+    const aspectRatio = img.width / img.height;
+    
+    // Set desired height and calculate width to maintain aspect ratio
+    const letterheadHeight = 42;
+    const letterheadWidth = letterheadHeight * aspectRatio;
+    
+    // Center the letterhead horizontally
+    const xPos = (pageWidth - letterheadWidth) / 2;
+    
+    doc.addImage(letterheadBase64, 'JPEG', xPos, 5, letterheadWidth, letterheadHeight);
+    
+    yPos = letterheadHeight + 15;
+  } catch (error) {
+    console.error('Failed to load letterhead, using default header:', error);
+    
+    // Fallback to generated header
+    doc.setFillColor(...primaryColor);
+    doc.rect(0, 0, pageWidth, 45, 'F');
+    
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(28);
+    doc.setFont('helvetica', 'bold');
+    doc.text('DCS', margin, 25);
+    
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Professional Cleaning Services', margin, 35);
+    
+    yPos = 55;
+  }
   
-  // Company name
-  doc.setTextColor(255, 255, 255);
-  doc.setFontSize(28);
-  doc.setFont('helvetica', 'bold');
-  doc.text('DCS', margin, 25);
-  
-  // Tagline
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
-  doc.text('Professional Cleaning Services', margin, 35);
-  
-  // Receipt title (top right)
+  // ============= RECEIPT TITLE =============
+  doc.setTextColor(...secondaryColor);
   doc.setFontSize(16);
   doc.setFont('helvetica', 'bold');
-  doc.text('PAYMENT RECEIPT', pageWidth - margin, 25, { align: 'right' });
+  doc.text('PAYMENT RECEIPT', pageWidth / 2, yPos, { align: 'center' });
+  
+  yPos += 5;
   
   // Receipt number
   doc.setFontSize(9);
   doc.setFont('helvetica', 'normal');
-  doc.text(`Receipt #: ${paymentData.payment_id}`, pageWidth - margin, 35, { align: 'right' });
+  doc.text(`Receipt #: ${paymentData.payment_id}`, pageWidth / 2, yPos, { align: 'center' });
   
-  yPos = 55;
+  yPos += 15;
   
   // ============= RECEIPT INFO =============
   doc.setTextColor(...secondaryColor);
