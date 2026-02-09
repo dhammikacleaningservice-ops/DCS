@@ -98,9 +98,9 @@ export default function Layout({ children, currentPageName }) {
           {/* Logo */}
           <div className="px-5 pt-6 pb-8">
             <div className="flex items-center gap-3">
-              <div className="relative h-10 w-10 rounded-xl bg-gradient-to-br from-emerald-400 via-teal-500 to-green-600 flex items-center justify-center shadow-lg shadow-emerald-500/30 overflow-hidden">
+              <div className="relative h-12 w-12 rounded-xl bg-gradient-to-br from-emerald-400 via-teal-500 to-green-600 flex items-center justify-center shadow-lg shadow-emerald-500/30 overflow-hidden">
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-emerald-400 to-green-600 blur-md opacity-50"></div>
-                <img src="/favicon.png" alt="DCS Logo" className="relative h-7 w-7 object-contain" />
+                <img src="/favicon.png" alt="DCS Logo" className="relative h-9 w-9 object-contain" />
               </div>
               <div>
                 <h1 className="text-white font-bold text-base leading-tight">Dhammika</h1>
