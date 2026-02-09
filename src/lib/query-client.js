@@ -7,13 +7,12 @@ export const queryClientInstance = new QueryClient({
 			refetchOnWindowFocus: false,
 			refetchOnReconnect: true,
 			retry: 1,
-			staleTime: 1000 * 60 * 5, // 5 minutes
-			gcTime: 1000 * 60 * 10, // 10 minutes (formerly cacheTime)
-			networkMode: 'offlineFirst',
+			staleTime: 1000 * 60 * 2, // 2 minutes (reduced from 5)
+			gcTime: 1000 * 60 * 5, // 5 minutes (reduced from 10)
+			networkMode: 'online', // Changed from offlineFirst for better performance
 		},
 		mutations: {
 			retry: 0,
-			networkMode: 'offlineFirst',
 		},
 	},
 });

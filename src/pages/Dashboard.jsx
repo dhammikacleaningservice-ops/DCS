@@ -7,10 +7,8 @@ import { Building2, Users, AlertTriangle, Wallet, ArrowRight } from "lucide-reac
 import { motion } from "framer-motion";
 import StatCard from "../components/ui/StatCard";
 import StatusBadge from "../components/ui/StatusBadge";
-import { useMobileOptimizations } from "@/hooks/use-mobile-optimizations";
 
 export default function Dashboard() {
-  const { shouldReduceMotion } = useMobileOptimizations();
   const { data: branches = [] } = useQuery({
     queryKey: ["branches"],
     queryFn: () => apiClient.entities.Branch.list(),

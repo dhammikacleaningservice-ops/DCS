@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 export function useMobileOptimizations() {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [isSlowConnection, setIsSlowConnection] = useState(false);
 
   useEffect(() => {
@@ -10,15 +10,13 @@ export function useMobileOptimizations() {
       setIsMobile(window.innerWidth < 768);
     };
     
-    checkMobile();
     window.addEventListener('resize', checkMobile);
 
-    // Check connection speed
+    // Check connection speed (simplified)
     if ('connection' in navigator) {
       const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-      if (connection) {
+      if (connection && connection.effectiveType) {
         const updateConnectionStatus = () => {
-          // 3G or slower
           setIsSlowConnection(
             connection.effectiveType === 'slow-2g' || 
             connection.effectiveType === '2g' || 

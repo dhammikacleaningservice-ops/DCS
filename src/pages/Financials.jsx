@@ -1,5 +1,5 @@
-import React, { useMemo, useState, useEffect, lazy, Suspense } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import React, { useMemo, useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/api/apiClient";
 import { TrendingUp, Users, Building2, Calendar, ArrowUpRight, ArrowDownRight, DollarSign, TrendingDown, ChevronDown, ChevronUp } from "lucide-react";
 import { motion } from "framer-motion";
@@ -14,14 +14,6 @@ const COLORS = ["#059669", "#10b981", "#14b8a6", "#0d9488", "#047857", "#f59e0b"
 
 export default function Financials() {
   const { shouldReduceMotion } = useMobileOptimizations();
-  const queryClient = useQueryClient();
-  
-  // Force fresh data on mount
-  useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ["salaryLogs"] });
-    queryClient.invalidateQueries({ queryKey: ["branches"] });
-    queryClient.invalidateQueries({ queryKey: ["cleaners"] });
-  }, [queryClient]);
   // Load saved revenues from localStorage
   const [branchRevenues, setBranchRevenues] = useState(() => {
     try {
@@ -43,28 +35,22 @@ export default function Financials() {
   const { data: salaryLogs = [] } = useQuery({
     queryKey: ["salaryLogs"],
     queryFn: () => apiClient.entities.SalaryLog.list("-created_date"),
-    staleTime: 0,
-    gcTime: 0,
-    refetchOnMount: 'always',
-    refetchOnWindowFocus: true,
+    staleTime: 30000, // 30 seconds
+    refetchOnMount: true,
   });
 
   const { data: branches = [] } = useQuery({
     queryKey: ["branches"],
     queryFn: () => apiClient.entities.Branch.list(),
-    staleTime: 0,
-    gcTime: 0,
-    refetchOnMount: 'always',
-    refetchOnWindowFocus: true,
+    staleTime: 30000, // 30 seconds
+    refetchOnMount: true,
   });
 
   const { data: cleaners = [] } = useQuery({
     queryKey: ["cleaners"],
     queryFn: () => apiClient.entities.Cleaner.list(),
-    staleTime: 0,
-    gcTime: 0,
-    refetchOnMount: 'always',
-    refetchOnWindowFocus: true,
+    staleTime: 30000, // 30 seconds
+    refetchOnMount: true,
   });
 
   // Calculate totals
