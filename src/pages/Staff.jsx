@@ -289,8 +289,12 @@ export default function Staff() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={closeDialog} className="rounded-full">Cancel</Button>
-            <Button onClick={handleSave} className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 rounded-full shadow-lg" disabled={!form.name}>
-              {editing ? "Update" : "Create"}
+            <Button 
+              onClick={handleSave} 
+              className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 rounded-full shadow-lg" 
+              disabled={!form.name || createMut.isPending || updateMut.isPending}
+            >
+              {(createMut.isPending || updateMut.isPending) ? "Saving..." : (editing ? "Update" : "Create")}
             </Button>
           </DialogFooter>
         </DialogContent>

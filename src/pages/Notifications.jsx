@@ -67,9 +67,10 @@ export default function Notifications() {
           unreadCount > 0 && (
             <Button
               onClick={() => markAllAsReadMut.mutate()}
+              disabled={markAllAsReadMut.isPending}
               className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 rounded-full px-5 gap-2 shadow-lg shadow-emerald-500/30"
             >
-              <Check className="h-4 w-4" /> Mark All Read
+              <Check className="h-4 w-4" /> {markAllAsReadMut.isPending ? "Marking..." : "Mark All Read"}
             </Button>
           )
         }
@@ -151,6 +152,7 @@ export default function Notifications() {
                             variant="ghost"
                             size="icon"
                             onClick={() => markAsReadMut.mutate(notif.id)}
+                            disabled={markAsReadMut.isPending}
                             className="h-8 w-8 text-slate-400 hover:text-teal-600"
                           >
                             <Eye className="h-4 w-4" />
@@ -160,6 +162,7 @@ export default function Notifications() {
                           variant="ghost"
                           size="icon"
                           onClick={() => deleteMut.mutate(notif.id)}
+                          disabled={deleteMut.isPending}
                           className="h-8 w-8 text-slate-400 hover:text-red-500"
                         >
                           <Trash2 className="h-4 w-4" />

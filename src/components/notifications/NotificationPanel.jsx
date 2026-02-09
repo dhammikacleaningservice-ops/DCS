@@ -83,9 +83,10 @@ export default function NotificationPanel({ isOpen, onClose }) {
                 variant="ghost"
                 size="sm"
                 onClick={() => markAllAsReadMut.mutate()}
+                disabled={markAllAsReadMut.isPending}
                 className="text-xs text-emerald-600 hover:text-emerald-700"
               >
-                Mark all read
+                {markAllAsReadMut.isPending ? "Marking..." : "Mark all read"}
               </Button>
             )}
             <button onClick={onClose} className="p-2 rounded-lg hover:bg-slate-200 transition-colors">
@@ -151,14 +152,16 @@ export default function NotificationPanel({ isOpen, onClose }) {
                         {!notif.is_read && (
                           <button
                             onClick={() => markAsReadMut.mutate(notif.id)}
-                            className="text-xs text-emerald-600 hover:text-emerald-700 font-medium px-2 py-1 rounded hover:bg-emerald-50"
+                            disabled={markAsReadMut.isPending}
+                            className="text-xs text-emerald-600 hover:text-emerald-700 font-medium px-2 py-1 rounded hover:bg-emerald-50 disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             Mark read
                           </button>
                         )}
                         <button
                           onClick={() => deleteMut.mutate(notif.id)}
-                          className="text-xs text-slate-400 hover:text-red-500 font-medium px-2 py-1 rounded hover:bg-red-50"
+                          disabled={deleteMut.isPending}
+                          className="text-xs text-slate-400 hover:text-red-500 font-medium px-2 py-1 rounded hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           Delete
                         </button>

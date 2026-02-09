@@ -53,10 +53,10 @@ export default function Layout({ children, currentPageName }) {
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center">
-            <Sparkles className="h-4 w-4 text-white" />
+          <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center overflow-hidden">
+            <img src="/favicon.png" alt="DCS Logo" className="h-7 w-7 object-contain" />
           </div>
-          <span className="font-bold text-slate-800 dark:text-slate-100 text-sm">Dhammika CS</span>
+          <span className="font-bold text-slate-800 dark:text-slate-100 text-sm">Dhammika Cleaning Service</span>
         </div>
         <div className="flex items-center gap-2">
           <button

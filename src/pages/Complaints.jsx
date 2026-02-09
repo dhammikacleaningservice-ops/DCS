@@ -123,8 +123,10 @@ export default function Complaints() {
             className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors">
             <Pencil className="h-4 w-4" />
           </button>
-          <button onClick={(e) => { e.stopPropagation(); deleteMut.mutate(row.id); }}
-            className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors">
+          <button 
+            onClick={(e) => { e.stopPropagation(); deleteMut.mutate(row.id); }}
+            disabled={deleteMut.isPending}
+            className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
             <Trash2 className="h-4 w-4" />
           </button>
         </div>
@@ -242,8 +244,12 @@ export default function Complaints() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={closeDialog} className="rounded-full">Cancel</Button>
-            <Button onClick={handleSave} className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 rounded-full shadow-lg" disabled={!form.branch || !form.description}>
-              {editing ? "Update" : "Submit"}
+            <Button 
+              onClick={handleSave} 
+              className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 rounded-full shadow-lg" 
+              disabled={!form.branch || !form.description || createMut.isPending || updateMut.isPending}
+            >
+              {(createMut.isPending || updateMut.isPending) ? "Saving..." : (editing ? "Update" : "Submit")}
             </Button>
           </DialogFooter>
         </DialogContent>
