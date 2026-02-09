@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { base44 } from "@/api/base44Client";
+import { apiClient } from "@/api/apiClient";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,19 +7,34 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Trash2, Check, Building2, Upload, X, Download, Receipt } from "lucide-react";
 import { toast } from "sonner";
+import { generatePDFReceipt } from "@/util/pdfReceiptGenerator";
 
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
-export default function PayrollCalculator({ cleaners, branches, onSaved }) {
-  const [payee, setPayee] = useState("");
-  const [month, setMonth] = useState(MONTHS[new Date().getMonth()]);
-  const [payDate, setPayDate] = useState(new Date().toISOString().split("T")[0]);
-  const [advance, setAdvance] = useState("");
-  const [workLog, setWorkLog] = useState([{ branch: "", days: "", rate: 500 }]);
-  const [transactionSlip, setTransactionSlip] = useState("");
+export default function PayrollCalculator({ cleaners, branches, editingPayment, onSaved, onCancel }) {
+  const [payee, setPayee] = useState(editingPayment?.staff_name || "");
+  const [month, setMonth] = useState(editingPayment?.month || MONTHS[new Date().getMonth()]);
+  const [payDate, setPayDate] = useState(editingPayment?.date || new Date().toISOString().split("T")[0]);
+  const [advance, setAdvance] = useState(editingPayment?.deductions?.toString() || "");
+  const [workLog, setWorkLog] = useState(() => {
+    if (editingPayment?.work_log) {
+      try {
+        const parsed = typeof editingPayment.work_log === 'string' 
+          ? JSON.parse(editingPayment.work_log) 
+          : editingPayment.work_log;
+        return parsed.length > 0 ? parsed : [{ branch: "", days: "", rate: 500 }];
+      } catch {
+        return [{ branch: "", days: "", rate: 500 }];
+      }
+    }
+    return [{ branch: "", days: "", rate: 500 }];
+  });
+  const [transactionSlip, setTransactionSlip] = useState(editingPayment?.transaction_slip_url || "");
   const [isDragging, setIsDragging] = useState(false);
   const [saving, setSaving] = useState(false);
   const fileInputRef = useRef(null);
+
+  const isEditing = !!editingPayment;
 
   const payeeRole = cleaners.find((c) => c.name === payee)?.role || "—";
 
@@ -49,54 +64,6 @@ export default function PayrollCalculator({ cleaners, branches, onSaved }) {
     handleImageUpload(file);
   };
 
-  const generateReceipt = (paymentData) => {
-    const receipt = `
-═══════════════════════════════════════════
-           PAYMENT RECEIPT
-═══════════════════════════════════════════
-
-Receipt #: ${paymentData.payment_id}
-Date: ${paymentData.date}
-Month: ${paymentData.month}
-
-───────────────────────────────────────────
-STAFF INFORMATION
-───────────────────────────────────────────
-Name: ${paymentData.staff_name}
-Role: ${paymentData.role}
-
-───────────────────────────────────────────
-WORK LOG
-───────────────────────────────────────────
-${paymentData.work_log.map((w, i) => 
-`${i + 1}. ${w.branch}
-   ${w.days} days × LKR ${w.rate} = LKR ${w.total.toLocaleString()}`
-).join('\n')}
-
-───────────────────────────────────────────
-PAYMENT SUMMARY
-───────────────────────────────────────────
-Gross Total:        LKR ${paymentData.gross_total.toLocaleString()}
-Deductions:         LKR ${paymentData.deductions.toLocaleString()}
-                    ──────────────────────
-NET PAY:            LKR ${paymentData.net_pay.toLocaleString()}
-
-═══════════════════════════════════════════
-    This is a computer-generated receipt
-═══════════════════════════════════════════
-    `;
-    
-    const blob = new Blob([receipt], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Receipt_${paymentData.staff_name}_${paymentData.month}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
-
   const handleSave = async () => {
     if (!payee || grossTotal <= 0) {
       toast.error("Please select a staff member and add work log entries");
@@ -119,7 +86,7 @@ NET PAY:            LKR ${paymentData.net_pay.toLocaleString()}
       }));
 
       const paymentData = {
-        payment_id: `PAY-${Date.now()}`,
+        payment_id: isEditing ? editingPayment.payment_id : `PAY-${Date.now()}`,
         date: payDate,
         month,
         staff_name: payee,
@@ -132,19 +99,22 @@ NET PAY:            LKR ${paymentData.net_pay.toLocaleString()}
         work_log: JSON.stringify(workLogData), // Convert to JSON string for Supabase
       };
       
-      console.log('Saving payment data:', paymentData);
+      console.log(isEditing ? 'Updating payment data:' : 'Saving payment data:', paymentData);
       
-      const result = await base44.entities.SalaryLog.create(paymentData);
+      const result = isEditing 
+        ? await apiClient.entities.SalaryLog.update(editingPayment.id, paymentData)
+        : await apiClient.entities.SalaryLog.create(paymentData);
+      
       console.log('Payment saved successfully:', result);
       
-      // Generate and download receipt
+      // Generate and download PDF receipt
       const receiptData = {
         ...paymentData,
         work_log: workLogData // Use array for receipt generation
       };
-      generateReceipt(receiptData);
+      generatePDFReceipt(receiptData);
       
-      toast.success("Payment recorded & receipt downloaded!");
+      toast.success(isEditing ? "Payment updated & PDF receipt downloaded!" : "Payment recorded & PDF receipt downloaded!");
       setSaving(false);
       onSaved();
     } catch (error) {
@@ -160,14 +130,28 @@ NET PAY:            LKR ${paymentData.net_pay.toLocaleString()}
       animate={{ opacity: 1, y: 0 }}
       className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50/40 to-white p-5 md:p-6 shadow-lg"
       >
-      <h3 className="text-lg font-bold text-slate-800 mb-5">Payroll Calculator</h3>
+      <div className="flex items-center justify-between mb-5">
+        <h3 className="text-lg font-bold text-slate-800">
+          {isEditing ? "Edit Payment" : "Payroll Calculator"}
+        </h3>
+        {onCancel && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onCancel}
+            className="text-slate-500 hover:text-slate-700"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
 
       <div className="grid md:grid-cols-2 gap-6">
         {/* Left: Payee Info */}
         <div className="space-y-4">
           <div className="grid gap-2">
             <Label>Staff Member</Label>
-            <Select value={payee} onValueChange={setPayee}>
+            <Select value={payee} onValueChange={setPayee} disabled={isEditing}>
               <SelectTrigger><SelectValue placeholder="Select staff" /></SelectTrigger>
               <SelectContent>
                 {cleaners.map((c) => (
@@ -366,8 +350,8 @@ NET PAY:            LKR ${paymentData.net_pay.toLocaleString()}
                     total: Number(r.days) * Number(r.rate),
                   })),
                 };
-                generateReceipt(testData);
-                toast.success("Receipt downloaded!");
+                generatePDFReceipt(testData);
+                toast.success("PDF receipt downloaded!");
               }}
               className="rounded-full gap-2"
             >
@@ -381,7 +365,7 @@ NET PAY:            LKR ${paymentData.net_pay.toLocaleString()}
               className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 rounded-full px-6 gap-2 shadow-lg shadow-emerald-500/30"
             >
               <Check className="h-4 w-4" />
-              {saving ? "Saving..." : "Confirm Payment"}
+              {saving ? "Saving..." : isEditing ? "Update Payment" : "Confirm Payment"}
             </Button>
           </div>
         </div>

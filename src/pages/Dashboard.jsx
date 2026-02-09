@@ -1,6 +1,6 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { apiClient } from "@/api/apiClient";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "../util";
 import { Building2, Users, AlertTriangle, Wallet, ArrowRight } from "lucide-react";
@@ -11,22 +11,22 @@ import StatusBadge from "../components/ui/StatusBadge";
 export default function Dashboard() {
   const { data: branches = [] } = useQuery({
     queryKey: ["branches"],
-    queryFn: () => base44.entities.Branch.list(),
+    queryFn: () => apiClient.entities.Branch.list(),
   });
 
   const { data: cleaners = [] } = useQuery({
     queryKey: ["cleaners"],
-    queryFn: () => base44.entities.Cleaner.list(),
+    queryFn: () => apiClient.entities.Cleaner.list(),
   });
 
   const { data: complaints = [] } = useQuery({
     queryKey: ["complaints"],
-    queryFn: () => base44.entities.Complaint.list(),
+    queryFn: () => apiClient.entities.Complaint.list(),
   });
 
   const { data: salaryLogs = [] } = useQuery({
     queryKey: ["salaryLogs"],
-    queryFn: () => base44.entities.SalaryLog.list("-created_date", 5),
+    queryFn: () => apiClient.entities.SalaryLog.list("-created_date", 5),
   });
 
   const openComplaints = complaints.filter((c) => c.status === "Open" || c.status === "In Progress");

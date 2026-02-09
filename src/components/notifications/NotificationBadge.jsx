@@ -1,13 +1,13 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { apiClient } from "@/api/apiClient";
 import { Bell } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function NotificationBadge({ onClick, className = "" }) {
   const { data: notifications = [] } = useQuery({
     queryKey: ["notifications"],
-    queryFn: () => base44.entities.Notification.filter({ is_read: false }, "-created_date"),
+    queryFn: () => apiClient.entities.Notification.filter({ is_read: false }, "-created_date"),
     refetchInterval: 30000, // Poll every 30 seconds
   });
 

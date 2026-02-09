@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { apiClient } from "@/api/apiClient";
 import { Plus, Pencil, Trash2, MapPin, Phone, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,21 +23,21 @@ export default function Branches() {
 
   const { data: branches = [] } = useQuery({
     queryKey: ["branches"],
-    queryFn: () => base44.entities.Branch.list(),
+    queryFn: () => apiClient.entities.Branch.list(),
   });
 
   const createMut = useMutation({
-    mutationFn: (data) => base44.entities.Branch.create(data),
+    mutationFn: (data) => apiClient.entities.Branch.create(data),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["branches"] }); closeDialog(); },
   });
 
   const updateMut = useMutation({
     mutationFn: async ({ id, data }) => {
-      const updated = await base44.entities.Branch.update(id, data);
+      const updated = await apiClient.entities.Branch.update(id, data);
       
       // Trigger notification for Minor Issue or Critical status
       if (data.status === "Minor Issue" || data.status === "Critical") {
-        await base44.entities.Notification.create({
+        await apiClient.entities.Notification.create({
           title: `Branch Status: ${data.status}`,
           message: `${data.branch_name} status changed to ${data.status}. ${data.status === "Critical" ? "Immediate attention required!" : "Please review the situation."}`,
           type: "branch_status",
@@ -58,7 +58,7 @@ export default function Branches() {
   });
 
   const deleteMut = useMutation({
-    mutationFn: (id) => base44.entities.Branch.delete(id),
+    mutationFn: (id) => apiClient.entities.Branch.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["branches"] }),
   });
 

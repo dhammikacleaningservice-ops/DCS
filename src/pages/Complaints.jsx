@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { apiClient } from "@/api/apiClient";
 import { Plus, Pencil, Trash2, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,21 +26,21 @@ export default function Complaints() {
 
   const { data: complaints = [] } = useQuery({
     queryKey: ["complaints"],
-    queryFn: () => base44.entities.Complaint.list("-created_date"),
+    queryFn: () => apiClient.entities.Complaint.list("-created_date"),
   });
 
   const { data: branches = [] } = useQuery({
     queryKey: ["branches"],
-    queryFn: () => base44.entities.Branch.list(),
+    queryFn: () => apiClient.entities.Branch.list(),
   });
 
   const createMut = useMutation({
     mutationFn: async (data) => {
-      const complaint = await base44.entities.Complaint.create(data);
+      const complaint = await apiClient.entities.Complaint.create(data);
       
       // Trigger notification for High or Critical priority complaints
       if (data.priority === "High" || data.priority === "Critical") {
-        await base44.entities.Notification.create({
+        await apiClient.entities.Notification.create({
           title: `${data.priority} Priority Complaint`,
           message: `New ${data.priority.toLowerCase()} priority complaint logged at ${data.branch}: ${data.description}`,
           type: "complaint",
@@ -62,11 +62,11 @@ export default function Complaints() {
 
   const updateMut = useMutation({
     mutationFn: async ({ id, data }) => {
-      const updated = await base44.entities.Complaint.update(id, data);
+      const updated = await apiClient.entities.Complaint.update(id, data);
       
       // Trigger notification if priority changed to High or Critical
       if (data.priority === "High" || data.priority === "Critical") {
-        await base44.entities.Notification.create({
+        await apiClient.entities.Notification.create({
           title: `${data.priority} Priority Complaint Updated`,
           message: `Complaint at ${data.branch} updated to ${data.priority.toLowerCase()} priority: ${data.description}`,
           type: "complaint",
@@ -87,7 +87,7 @@ export default function Complaints() {
   });
 
   const deleteMut = useMutation({
-    mutationFn: (id) => base44.entities.Complaint.delete(id),
+    mutationFn: (id) => apiClient.entities.Complaint.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["complaints"] }),
   });
 

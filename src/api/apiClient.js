@@ -82,7 +82,7 @@ const buildSupabaseEntityApi = (tableName) => ({
   }
 });
 
-export const base44 = {
+export const apiClient = {
   entities: {
     Branch: buildSupabaseEntityApi('Branch'),
     Cleaner: buildSupabaseEntityApi('Cleaner'),

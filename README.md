@@ -1,16 +1,16 @@
-**Welcome to your Base44 project** 
+# Dhammika Cleaning Service App
 
-**About**
+## About
 
-View and Edit  your app on [Base44.com](http://Base44.com) 
+A comprehensive management system for Dhammika Cleaning Service.
 
-This project contains everything you need to run your app locally.
+This project contains everything you need to run the app locally.
 
-**Edit the code in your local development environment**
+## Local Development
 
-Any change pushed to the repo will also be reflected in the Base44 Builder.
+Any changes pushed to the repository will be reflected in the deployment.
 
-**Prerequisites:** 
+## Prerequisites
 
 1. Clone the repository using the project's Git URL 
 2. Navigate to the project directory
@@ -18,22 +18,16 @@ Any change pushed to the repo will also be reflected in the Base44 Builder.
 4. Create an `.env.local` file and set the right environment variables
 
 ```
-VITE_BASE44_APP_ID=your_app_id
-VITE_BASE44_APP_BASE_URL=your_backend_url
-
-e.g.
-VITE_BASE44_APP_ID=cbef744a8545c389ef439ea6
-VITE_BASE44_APP_BASE_URL=https://my-to-do-list-81bfaad7.base44.app
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
 Run the app: `npm run dev`
 
-**Publish your changes**
+## Deployment
 
-Open [Base44.com](http://Base44.com) and click on Publish.
+Build the app for production: `npm run build`
 
-**Docs & Support**
+## Support
 
-Documentation: [https://docs.base44.com/Integrations/Using-GitHub](https://docs.base44.com/Integrations/Using-GitHub)
-
-Support: [https://app.base44.com/support](https://app.base44.com/support)
+For any issues or questions about the application, please contact the development team.

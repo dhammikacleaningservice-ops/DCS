@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { base44, supabase } from '@/api/base44Client';
+import { apiClient, supabase } from '@/api/apiClient';
 
 const AuthContext = createContext();
 
@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }) => {
       setIsLoadingAuth(true);
       setAuthError(null);
       
-      const currentUser = await base44.auth.me();
+      const currentUser = await apiClient.auth.me();
       
       if (!currentUser) {
         // Auto-login as guest for now (we'll add proper auth UI later)
@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }) => {
   const logout = (shouldRedirect = true) => {
     setUser(null);
     setIsAuthenticated(false);
-    base44.auth.logout();
+    apiClient.auth.logout();
     
     if (shouldRedirect) {
       window.location.href = '/';
@@ -84,7 +84,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const navigateToLogin = () => {
-    base44.auth.redirectToLogin();
+    apiClient.auth.redirectToLogin();
   };
 
   return (

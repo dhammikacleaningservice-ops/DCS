@@ -12,8 +12,11 @@ import {
   ChevronRight,
   Sparkles,
   TrendingUp,
+  Moon,
+  Sun,
 } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
+import { useTheme } from "./lib/ThemeContext";
 import NotificationBadge from "./components/notifications/NotificationBadge";
 import NotificationPanel from "./components/notifications/NotificationPanel";
 
@@ -29,9 +32,10 @@ const navItems = [
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notificationPanelOpen, setNotificationPanelOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50 font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 font-sans transition-colors duration-300">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
@@ -47,19 +51,32 @@ export default function Layout({ children, currentPageName }) {
       `}</style>
 
       {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200 px-4 py-3 flex items-center justify-between">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center">
             <Sparkles className="h-4 w-4 text-white" />
           </div>
-          <span className="font-bold text-slate-800 text-sm">Dhammika CS</span>
+          <span className="font-bold text-slate-800 dark:text-slate-100 text-sm">Dhammika CS</span>
         </div>
-        <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-2 rounded-lg hover:bg-slate-100 transition-colors"
-        >
-          {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            aria-label="Toggle theme"
+          >
+            {theme === 'dark' ? (
+              <Sun className="h-5 w-5 text-slate-300" />
+            ) : (
+              <Moon className="h-5 w-5 text-slate-600" />
+            )}
+          </button>
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          >
+            {sidebarOpen ? <X className="h-5 w-5 dark:text-slate-300" /> : <Menu className="h-5 w-5 dark:text-slate-300" />}
+          </button>
+        </div>
       </div>
 
       {/* Sidebar Overlay */}
@@ -120,7 +137,18 @@ export default function Layout({ children, currentPageName }) {
 
           {/* Footer */}
           <div className="px-5 py-4 border-t border-slate-800/50 flex items-center justify-between bg-gradient-to-r from-slate-900/50 to-slate-950/50">
-            <p className="text-[10px] text-slate-600 uppercase tracking-widest">Business Management</p>
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg hover:bg-white/5 transition-colors group"
+              aria-label="Toggle theme"
+            >
+              {theme === 'dark' ? (
+                <Sun className="h-4 w-4 text-slate-400 group-hover:text-yellow-400 transition-colors" />
+              ) : (
+                <Moon className="h-4 w-4 text-slate-400 group-hover:text-blue-400 transition-colors" />
+              )}
+            </button>
+            <p className="text-[10px] text-slate-600 uppercase tracking-widest">Business Mgmt</p>
             <NotificationBadge onClick={() => setNotificationPanelOpen(true)} />
           </div>
         </div>

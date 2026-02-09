@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { apiClient } from "@/api/apiClient";
 import { TrendingUp, Users, Building2, Calendar, ArrowUpRight, ArrowDownRight, DollarSign, TrendingDown, ChevronDown, ChevronUp } from "lucide-react";
 import { motion } from "framer-motion";
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
@@ -32,17 +32,17 @@ export default function Financials() {
 
   const { data: salaryLogs = [] } = useQuery({
     queryKey: ["salaryLogs"],
-    queryFn: () => base44.entities.SalaryLog.list("-created_date"),
+    queryFn: () => apiClient.entities.SalaryLog.list("-created_date"),
   });
 
   const { data: branches = [] } = useQuery({
     queryKey: ["branches"],
-    queryFn: () => base44.entities.Branch.list(),
+    queryFn: () => apiClient.entities.Branch.list(),
   });
 
   const { data: cleaners = [] } = useQuery({
     queryKey: ["cleaners"],
-    queryFn: () => base44.entities.Cleaner.list(),
+    queryFn: () => apiClient.entities.Cleaner.list(),
   });
 
   // Calculate totals

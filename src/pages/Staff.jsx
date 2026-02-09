@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { apiClient } from "@/api/apiClient";
 import { Plus, Phone, Building2, User, Search, Upload, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -28,31 +28,31 @@ export default function Staff() {
 
   const { data: cleaners = [] } = useQuery({
     queryKey: ["cleaners"],
-    queryFn: () => base44.entities.Cleaner.list(),
+    queryFn: () => apiClient.entities.Cleaner.list(),
   });
 
   const { data: branches = [] } = useQuery({
     queryKey: ["branches"],
-    queryFn: () => base44.entities.Branch.list(),
+    queryFn: () => apiClient.entities.Branch.list(),
   });
 
   const { data: salaryLogs = [] } = useQuery({
     queryKey: ["salaryLogs"],
-    queryFn: () => base44.entities.SalaryLog.list(),
+    queryFn: () => apiClient.entities.SalaryLog.list(),
   });
 
   const createMut = useMutation({
-    mutationFn: (data) => base44.entities.Cleaner.create(data),
+    mutationFn: (data) => apiClient.entities.Cleaner.create(data),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["cleaners"] }); closeDialog(); },
   });
 
   const updateMut = useMutation({
-    mutationFn: ({ id, data }) => base44.entities.Cleaner.update(id, data),
+    mutationFn: ({ id, data }) => apiClient.entities.Cleaner.update(id, data),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["cleaners"] }); closeDialog(); },
   });
 
   const deleteMut = useMutation({
-    mutationFn: (id) => base44.entities.Cleaner.delete(id),
+    mutationFn: (id) => apiClient.entities.Cleaner.delete(id),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["cleaners"] }); setSelectedStaff(null); },
   });
 
