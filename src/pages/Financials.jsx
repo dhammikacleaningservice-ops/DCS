@@ -163,6 +163,20 @@ export default function Financials() {
         subtitle="Complete overview of payroll and expenses"
       />
 
+      {/* Financial Image */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="rounded-2xl overflow-hidden shadow-lg"
+      >
+        <img 
+          src="/unnamed.png" 
+          alt="Financial Overview" 
+          className="w-full h-auto object-cover"
+        />
+      </motion.div>
+
       {/* Key Metrics */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
         <motion.div
