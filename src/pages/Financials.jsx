@@ -36,21 +36,27 @@ export default function Financials() {
     queryKey: ["salaryLogs"],
     queryFn: () => apiClient.entities.SalaryLog.list("-created_date"),
     staleTime: 0,
+    gcTime: 0,
     refetchOnMount: 'always',
+    refetchOnWindowFocus: true,
   });
 
   const { data: branches = [] } = useQuery({
     queryKey: ["branches"],
     queryFn: () => apiClient.entities.Branch.list(),
     staleTime: 0,
+    gcTime: 0,
     refetchOnMount: 'always',
+    refetchOnWindowFocus: true,
   });
 
   const { data: cleaners = [] } = useQuery({
     queryKey: ["cleaners"],
     queryFn: () => apiClient.entities.Cleaner.list(),
     staleTime: 0,
+    gcTime: 0,
     refetchOnMount: 'always',
+    refetchOnWindowFocus: true,
   });
 
   // Calculate totals
