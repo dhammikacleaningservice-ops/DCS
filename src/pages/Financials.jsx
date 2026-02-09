@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, lazy, Suspense } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/api/apiClient";
 import { TrendingUp, Users, Building2, Calendar, ArrowUpRight, ArrowDownRight, DollarSign, TrendingDown, ChevronDown, ChevronUp } from "lucide-react";
@@ -8,10 +8,12 @@ import PageHeader from "../components/ui/PageHeader";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import { useMobileOptimizations } from "@/hooks/use-mobile-optimizations";
 
 const COLORS = ["#059669", "#10b981", "#14b8a6", "#0d9488", "#047857", "#f59e0b"];
 
 export default function Financials() {
+  const { shouldReduceMotion } = useMobileOptimizations();
   // Load saved revenues from localStorage
   const [branchRevenues, setBranchRevenues] = useState(() => {
     try {
@@ -166,9 +168,9 @@ export default function Financials() {
       {/* Key Metrics */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
+          initial={shouldReduceMotion ? {} : { opacity: 0, y: 20 }}
+          animate={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+          transition={shouldReduceMotion ? {} : { delay: 0.1 }}
           className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800 p-6 shadow-xl shadow-emerald-500/30"
         >
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl"></div>
@@ -183,9 +185,9 @@ export default function Financials() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          initial={shouldReduceMotion ? {} : { opacity: 0, y: 20 }}
+          animate={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+          transition={shouldReduceMotion ? {} : { delay: 0.2 }}
           className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-teal-600 via-green-700 to-emerald-800 p-6 shadow-xl shadow-teal-500/30"
         >
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl"></div>
@@ -200,9 +202,9 @@ export default function Financials() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+          initial={shouldReduceMotion ? {} : { opacity: 0, y: 20 }}
+          animate={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+          transition={shouldReduceMotion ? {} : { delay: 0.3 }}
           className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-600 via-yellow-700 to-amber-800 p-6 shadow-xl shadow-amber-500/30"
         >
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl"></div>
@@ -217,9 +219,9 @@ export default function Financials() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
+          initial={shouldReduceMotion ? {} : { opacity: 0, y: 20 }}
+          animate={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+          transition={shouldReduceMotion ? {} : { delay: 0.4 }}
           className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-green-600 via-emerald-700 to-teal-800 p-6 shadow-xl shadow-green-500/30"
         >
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl"></div>
@@ -236,9 +238,9 @@ export default function Financials() {
 
       {/* Branch Profit & Expense Analysis */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
+        initial={shouldReduceMotion ? {} : { opacity: 0, y: 20 }}
+        animate={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+        transition={shouldReduceMotion ? {} : { delay: 0.5 }}
         className="rounded-2xl border border-slate-200/80 bg-white/80 backdrop-blur-sm p-6 shadow-lg"
       >
         <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
@@ -296,9 +298,9 @@ export default function Financials() {
 
       {/* Monthly Branch Expenses */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
+        initial={shouldReduceMotion ? {} : { opacity: 0, y: 20 }}
+        animate={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+        transition={shouldReduceMotion ? {} : { delay: 0.6 }}
         className="rounded-2xl border border-slate-200/80 bg-white/80 backdrop-blur-sm p-6 shadow-lg"
       >
         <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
@@ -335,9 +337,9 @@ export default function Financials() {
 
       {/* Total Personnel Cost Summary */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7 }}
+        initial={shouldReduceMotion ? {} : { opacity: 0, y: 20 }}
+        animate={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+        transition={shouldReduceMotion ? {} : { delay: 0.7 }}
         className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-6 shadow-lg"
       >
         <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
@@ -370,9 +372,9 @@ export default function Financials() {
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Monthly Trend */}
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.5 }}
+          initial={shouldReduceMotion ? {} : { opacity: 0, x: -20 }}
+          animate={shouldReduceMotion ? {} : { opacity: 1, x: 0 }}
+          transition={shouldReduceMotion ? {} : { delay: 0.5 }}
           className="rounded-2xl border border-slate-200/80 bg-white/80 backdrop-blur-sm p-6 shadow-lg"
         >
           <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
@@ -405,9 +407,9 @@ export default function Financials() {
 
         {/* Branch Spending */}
         <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.9 }}
+          initial={shouldReduceMotion ? {} : { opacity: 0, x: 20 }}
+          animate={shouldReduceMotion ? {} : { opacity: 1, x: 0 }}
+          transition={shouldReduceMotion ? {} : { delay: 0.9 }}
           className="rounded-2xl border border-slate-200/80 bg-white/80 backdrop-blur-sm p-6 shadow-lg"
         >
           <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
@@ -439,9 +441,9 @@ export default function Financials() {
 
       {/* Staff Payment History */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8 }}
+        initial={shouldReduceMotion ? {} : { opacity: 0, y: 20 }}
+        animate={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+        transition={shouldReduceMotion ? {} : { delay: 0.8 }}
         className="rounded-2xl border border-slate-200/80 bg-white/80 backdrop-blur-sm p-6 shadow-lg"
       >
         <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
@@ -543,9 +545,9 @@ export default function Financials() {
 
       {/* Role Distribution */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7 }}
+        initial={shouldReduceMotion ? {} : { opacity: 0, y: 20 }}
+        animate={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+        transition={shouldReduceMotion ? {} : { delay: 0.7 }}
         className="rounded-2xl border border-slate-200/80 bg-white/80 backdrop-blur-sm p-6 shadow-lg"
       >
         <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
@@ -600,9 +602,9 @@ export default function Financials() {
       {/* Summary Cards */}
       <div className="grid md:grid-cols-3 gap-5">
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.8 }}
+          initial={shouldReduceMotion ? {} : { opacity: 0, scale: 0.95 }}
+          animate={shouldReduceMotion ? {} : { opacity: 1, scale: 1 }}
+          transition={shouldReduceMotion ? {} : { delay: 0.8 }}
           className="rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 p-6 shadow-xl"
         >
           <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Active Branches</p>
@@ -611,9 +613,9 @@ export default function Financials() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.9 }}
+          initial={shouldReduceMotion ? {} : { opacity: 0, scale: 0.95 }}
+          animate={shouldReduceMotion ? {} : { opacity: 1, scale: 1 }}
+          transition={shouldReduceMotion ? {} : { delay: 0.9 }}
           className="rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 p-6 shadow-xl"
         >
           <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Staff</p>
@@ -622,9 +624,9 @@ export default function Financials() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 1.0 }}
+          initial={shouldReduceMotion ? {} : { opacity: 0, scale: 0.95 }}
+          animate={shouldReduceMotion ? {} : { opacity: 1, scale: 1 }}
+          transition={shouldReduceMotion ? {} : { delay: 1.0 }}
           className="rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 p-6 shadow-xl"
         >
           <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Payment Records</p>

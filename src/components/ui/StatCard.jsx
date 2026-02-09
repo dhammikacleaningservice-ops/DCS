@@ -1,7 +1,10 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { useMobileOptimizations } from "@/hooks/use-mobile-optimizations";
 
 export default function StatCard({ title, value, icon: Icon, color = "teal", subtitle }) {
+  const { shouldReduceMotion } = useMobileOptimizations();
+  
   const colorMap = {
     teal: { bg: "bg-gradient-to-br from-emerald-50 to-teal-50", icon: "bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30", border: "border-emerald-200/50" },
     blue: { bg: "bg-gradient-to-br from-teal-50 to-cyan-50", icon: "bg-gradient-to-br from-teal-500 to-cyan-600 text-white shadow-lg shadow-teal-500/30", border: "border-teal-200/50" },
@@ -14,10 +17,10 @@ export default function StatCard({ title, value, icon: Icon, color = "teal", sub
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -4, transition: { duration: 0.2 } }}
-      transition={{ duration: 0.4 }}
+      initial={shouldReduceMotion ? {} : { opacity: 0, y: 12 }}
+      animate={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+      whileHover={shouldReduceMotion ? {} : { y: -4, transition: { duration: 0.2 } }}
+      transition={shouldReduceMotion ? {} : { duration: 0.4 }}
       className={`relative overflow-hidden rounded-2xl border ${c.border} ${c.bg} p-5 md:p-6 shadow-lg backdrop-blur-sm`}
     >
       <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/40 to-transparent rounded-full blur-3xl"></div>
@@ -28,8 +31,8 @@ export default function StatCard({ title, value, icon: Icon, color = "teal", sub
           {subtitle && <p className="mt-1 text-xs font-medium text-slate-500">{subtitle}</p>}
         </div>
         <motion.div 
-          whileHover={{ scale: 1.1, rotate: 5 }}
-          transition={{ type: "spring", stiffness: 400, damping: 10 }}
+          whileHover={shouldReduceMotion ? {} : { scale: 1.1, rotate: 5 }}
+          transition={shouldReduceMotion ? {} : { type: "spring", stiffness: 400, damping: 10 }}
           className={`rounded-xl p-2.5 ${c.icon}`}
         >
           <Icon className="h-5 w-5" />
